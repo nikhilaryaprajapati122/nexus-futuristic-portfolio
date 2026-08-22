@@ -467,3 +467,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+// ==========================================
+// NEXUS // TERMINAL BOOT TYPING
+// ==========================================
+
+function startTerminalBoot() {
+
+    const output = document.getElementById("terminalOutput");
+    const input = document.getElementById("terminalInput");
+
+    if (!output || !input) return;
+
+    const bootLines = [
+        "Connecting to NIKHIL-CORE...",
+        "Loading terminal interface...",
+        "Checking system modules...",
+        "Terminal connection established.",
+        "SYSTEM STATUS: ONLINE"
+    ];
+
+    let lineIndex = 0;
+
+    function typeLine(text, callback) {
+
+        const line = document.createElement("p");
+
+        line.className = "terminal-boot-line";
+
+        output.appendChild(line);
+
+        let charIndex = 0;
+
+        function typeCharacter() {
+
+            if (charIndex < text.length) {
+
+                line.textContent += text.charAt(charIndex);
+
+                charIndex++;
+
+                setTimeout(typeCharacter, 45);
+
+            } else {
+
+                setTimeout(callback, 350);
+            }
+        }
+
+        typeCharacter();
+    }
+
+    function nextLine() {
+
+        if (lineIndex >= bootLines.length) {
+
+            input.focus();
+            return;
+        }
+
+        typeLine(
+            bootLines[lineIndex],
+            () => {
+                lineIndex++;
+                nextLine();
+            }
+        );
+    }
+
+    setTimeout(nextLine, 1800);
+}
+
+startTerminalBoot();
