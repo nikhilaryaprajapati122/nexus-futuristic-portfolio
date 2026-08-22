@@ -467,11 +467,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// ==========================================
-// NEXUS // TERMINAL BOOT TYPING
-// ==========================================
 
-function startTerminalBoot() {
+// =========================================================
+// NEXUS // INFINITE TERMINAL TYPING
+// =========================================================
+
+(function () {
 
     const output = document.getElementById("terminalOutput");
     const input = document.getElementById("terminalInput");
@@ -486,55 +487,105 @@ function startTerminalBoot() {
         "SYSTEM STATUS: ONLINE"
     ];
 
-    let lineIndex = 0;
+    let cycle = 0;
 
-    function typeLine(text, callback) {
+    function typeLine(text, className, callback) {
 
         const line = document.createElement("p");
+        line.className = className;
 
-        line.className = "terminal-boot-line";
+        const textElement = document.createElement("span");
+        textElement.className = "terminal-typing";
+
+        const cursor = document.createElement("span");
+        cursor.className = "terminal-typing-cursor";
+
+        line.appendChild(textElement);
+        line.appendChild(cursor);
 
         output.appendChild(line);
 
-        let charIndex = 0;
+        let index = 0;
 
         function typeCharacter() {
 
-            if (charIndex < text.length) {
+            if (index < text.length) {
 
-                line.textContent += text.charAt(charIndex);
+                textElement.textContent += text[index];
 
-                charIndex++;
+                index++;
 
-                setTimeout(typeCharacter, 45);
+                output.scrollTop = output.scrollHeight;
 
-            } else {
+                setTimeout(typeCharacter, 55);
 
-                setTimeout(callback, 350);
+                return;
             }
+
+            cursor.remove();
+
+            setTimeout(callback, 500);
         }
 
         typeCharacter();
     }
 
-    function nextLine() {
 
-        if (lineIndex >= bootLines.length) {
+    function startCycle() {
 
-            input.focus();
-            return;
+        /*
+         * Clear ONLY the previous animated boot messages.
+         * User commands are preserved.
+         */
+
+        const oldBootLines =
+            output.querySelectorAll(".nexus-boot-line");
+
+        oldBootLines.forEach(line => line.remove());
+
+
+        let index = 0;
+
+
+        function next() {
+
+            if (index >= bootLines.length) {
+
+                cycle++;
+
+                setTimeout(startCycle, 2000);
+
+                return;
+            }
+
+
+            const message =
+                bootLines[index];
+
+            const className =
+                index === bootLines.length - 1
+                    ? "nexus-boot-line terminal-boot-success"
+                    : "nexus-boot-line terminal-boot-line";
+
+
+            typeLine(
+                message,
+                className,
+                () => {
+
+                    index++;
+
+                    next();
+                }
+            );
         }
 
-        typeLine(
-            bootLines[lineIndex],
-            () => {
-                lineIndex++;
-                nextLine();
-            }
-        );
+
+        next();
     }
 
-    setTimeout(nextLine, 1800);
-}
 
-startTerminalBoot();
+    // Start terminal animation
+    setTimeout(startCycle, 1200);
+
+})();
