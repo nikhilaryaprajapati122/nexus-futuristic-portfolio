@@ -423,3 +423,47 @@ document.addEventListener("DOMContentLoaded", () => {
     runBootSequence();
 
 });
+
+// ==========================================
+// NEXUS // TERMINAL CURSOR + INPUT EFFECT
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const terminalInput = document.getElementById("terminalInput");
+
+    if (!terminalInput) return;
+
+    // Automatically focus terminal when user clicks anywhere
+    document
+        .getElementById("terminal")
+        ?.addEventListener("click", () => {
+            terminalInput.focus();
+        });
+
+    // Blinking cursor-style placeholder
+    const placeholders = [
+        "type a command...",
+        "try: help",
+        "try: system",
+        "try: skills",
+        "try: projects"
+    ];
+
+    let placeholderIndex = 0;
+
+    setInterval(() => {
+
+        if (document.activeElement !== terminalInput) {
+
+            placeholderIndex =
+                (placeholderIndex + 1) % placeholders.length;
+
+            terminalInput.placeholder =
+                placeholders[placeholderIndex];
+        }
+
+    }, 1800);
+
+});
+
