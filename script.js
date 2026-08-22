@@ -343,3 +343,83 @@ terminalForm.addEventListener(
         terminalInput.value = "";
     }
 );
+
+
+// ==========================================
+// NEXUS // FUTURISTIC BOOT SEQUENCE
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const bootMessages = [
+        "INITIALIZING NEXUS CORE...",
+        "LOADING DEVELOPMENT MODULES...",
+        "CONNECTING TERMINAL...",
+        "CALIBRATING SKILL MATRIX...",
+        "LOADING PROJECT COMMAND CENTER...",
+        "SYSTEM CHECK COMPLETE...",
+        "NEXUS CORE ONLINE"
+    ];
+
+    let index = 0;
+
+    const bootScreen = document.createElement("div");
+
+    bootScreen.id = "nexus-boot-screen";
+
+    bootScreen.innerHTML = `
+        <div class="boot-content">
+            <div class="boot-title">NEXUS // SYSTEM BOOT</div>
+            <div class="boot-line">
+                <span id="boot-text">INITIALIZING...</span><span class="boot-cursor">█</span>
+            </div>
+            <div class="boot-progress">
+                <div id="boot-progress-bar"></div>
+            </div>
+            <div id="boot-status">SYSTEM STARTING...</div>
+        </div>
+    `;
+
+    document.body.prepend(bootScreen);
+
+    const bootText = document.getElementById("boot-text");
+    const progressBar = document.getElementById("boot-progress-bar");
+    const bootStatus = document.getElementById("boot-status");
+
+    function runBootSequence() {
+
+        if (index < bootMessages.length) {
+
+            bootText.textContent = bootMessages[index];
+
+            const progress =
+                ((index + 1) / bootMessages.length) * 100;
+
+            progressBar.style.width = progress + "%";
+
+            bootStatus.textContent =
+                "CORE PROGRESS : " + Math.round(progress) + "%";
+
+            index++;
+
+            setTimeout(runBootSequence, 650);
+
+        } else {
+
+            bootText.textContent = "NEXUS CORE ONLINE";
+            bootStatus.textContent = "SYSTEM STATUS : ONLINE";
+
+            setTimeout(() => {
+                bootScreen.classList.add("boot-complete");
+
+                setTimeout(() => {
+                    bootScreen.remove();
+                }, 900);
+
+            }, 700);
+        }
+    }
+
+    runBootSequence();
+
+});
